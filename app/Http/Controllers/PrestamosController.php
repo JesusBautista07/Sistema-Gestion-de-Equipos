@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Prestamo;
+use App\Models\Equipo;
+use App\Models\Solicitante;
 use Illuminate\Http\Request;
 
 class PrestamosController extends Controller
@@ -21,7 +23,9 @@ class PrestamosController extends Controller
      */
     public function create()
     {
-        return view('prestamos.create');
+        $equipos = Equipo::where('estado', 'Disponible')->get();
+        $solicitantes = Solicitante::all();
+        return view('prestamos.create', compact('equipos', 'solicitantes'));
     }
 
     /**
@@ -29,6 +33,14 @@ class PrestamosController extends Controller
      */
     public function store(Request $request, Prestamo $prestamos)
     {
+
+        $request->validate([
+        'equipo_id'                => 'required|exists:equipos,id',
+        'solicitante_id'           => 'required|exists:solicitantes,id',
+        'fecha_prestamo'           => 'required|date',
+        'fecha_devolucion_esperada'=> 'required|date|after:fecha_prestamo',
+        ]);
+
         Prestamo::create($request->all());
         return redirect()->route('prestamos.index', compact('prestamos'));
     }
@@ -54,6 +66,11 @@ class PrestamosController extends Controller
      */
     public function update(Request $request, Prestamo $prestamos)
     {
+
+        $request->validate([
+        'fecha_devolucion_real' => 'required|date|after:fecha_prestamo',
+        ]);
+
         $prestamos->update($request->all());
         return redirect()->route('prestamos.index', compact('prestamos'));
     }

@@ -30,6 +30,14 @@ class SolicitantesController extends Controller
      */
     public function store(Request $request, Solicitante $solicitantes)
     {
+
+        $request->validate([
+        'nombre'    => 'required',
+        'documento' => 'required|unique:solicitantes,documento',
+        'correo'    => 'required|email|unique:solicitantes,correo',
+        'tipo'      => 'required|in:Estudiante,Docente',
+        ]);
+
         Solicitante::create($request->all());
         return redirect()->route('solicitantes.index', compact('solicitantes'));
     }
@@ -55,6 +63,14 @@ class SolicitantesController extends Controller
      */
     public function update(Request $request, Solicitante $solicitantes)
     {
+
+        $request->validate([
+        'nombre'    => 'required',
+        'documento' => 'required|unique:solicitantes,documento' .$solicitantes->id,
+        'correo'    => 'required|email|unique:solicitantes,correo' .$solicitantes->id,
+        'tipo'      => 'required|in:Estudiante,Docente',
+        ]);
+
         $solicitantes->update($request->all());
         return redirect()->route('solicitantes.index', compact('solicitantes'));
     }

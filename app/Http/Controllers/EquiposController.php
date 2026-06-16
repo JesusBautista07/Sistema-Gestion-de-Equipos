@@ -30,6 +30,14 @@ class EquiposController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'codigo'    => 'required|unique:equipos,codigo,',
+            'nombre'    => 'required',
+            'categoria' => 'required',
+            'marca'     => 'required',
+            'estado'    => 'required|in:Disponible,Prestado,Mantenimiento',
+        ]);
+
            Equipo::create($request->all());
            return redirect()->route('equipos.index');
     }
@@ -55,6 +63,16 @@ class EquiposController extends Controller
      */
     public function update(Request $request, Equipo $equipos)
     {
+
+        $request->validate([
+            'codigo'    => 'required|unique:equipos,codigo,',
+            'nombre'    => 'required',
+            'categoria' => 'required',
+            'marca'     => 'required',
+            'estado'    => 'required|in:Disponible,Prestado,Mantenimiento',
+        ]);
+        
+        
         $equipos->update($request->all());   
         return redirect()->route('equipos.index');
     }
