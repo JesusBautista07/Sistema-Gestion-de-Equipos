@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Solicitante;
 
 class SolicitantesController extends Controller
 {
@@ -11,7 +12,9 @@ class SolicitantesController extends Controller
      */
     public function index()
     {
-        //
+        $solicitantes = Solicitante::all();
+        return view('solicitantes.index', compact('solicitantes'));
+
     }
 
     /**
@@ -19,15 +22,16 @@ class SolicitantesController extends Controller
      */
     public function create()
     {
-        //
+        return view('solicitantes.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Solicitante $solicitantes)
     {
-        //
+        Solicitante::create($request->all());
+        return redirect()->route('solicitantes.index', compact('solicitantes'));
     }
 
     /**
@@ -43,22 +47,24 @@ class SolicitantesController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('solicitantes.edit', compact('solicitantes'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Solicitante $solicitantes)
     {
-        //
+        $solicitantes->update($request->all());
+        return redirect()->route('solicitantes.index', compact('solicitantes'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Solicitante $solicitantes)
     {
-        //
+        $solicitantes->delete();
+        return redirect()->route('solicitantes.index');
     }
 }

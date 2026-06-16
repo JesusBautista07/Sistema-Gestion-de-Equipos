@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Equipo; 
+
 
 class EquiposController extends Controller
 {
@@ -11,7 +13,8 @@ class EquiposController extends Controller
      */
     public function index()
     {
-        //
+        $equipos = Equipo::all();
+        return view('equipos.index', compact('equipos'));
     }
 
     /**
@@ -19,7 +22,7 @@ class EquiposController extends Controller
      */
     public function create()
     {
-        //
+        return view('equipos.create');
     }
 
     /**
@@ -27,7 +30,8 @@ class EquiposController extends Controller
      */
     public function store(Request $request)
     {
-        //
+           Equipo::create($request->all());
+           return redirect()->route('equipos.index');
     }
 
     /**
@@ -41,24 +45,26 @@ class EquiposController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, Equipo $equipos)
     {
-        //
+        return view('equipos.edit', compact('equipos'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Equipo $equipos)
     {
-        //
+        $equipos->update($request->all());   
+        return redirect()->route('equipos.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Equipo $equipos)
     {
-        //
+        $equipos->delete(); 
+        return redirect()->route('equipos.index');
     }
 }

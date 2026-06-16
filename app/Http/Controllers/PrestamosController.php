@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Prestamos;
+use App\Models\Prestamo;
 use Illuminate\Http\Request;
 
 class PrestamosController extends Controller
@@ -12,7 +12,8 @@ class PrestamosController extends Controller
      */
     public function index()
     {
-        //
+        Prestamo::all();
+        return view('prestamos.index');
     }
 
     /**
@@ -20,21 +21,22 @@ class PrestamosController extends Controller
      */
     public function create()
     {
-        //
+        return view('prestamos.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Prestamo $prestamos)
     {
-        //
+        Prestamo::create($request->all());
+        return redirect()->route('prestamos.index', compact('prestamos'));
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Prestamos $prestamos)
+    public function show(Prestamo $prestamos)
     {
         //
     }
@@ -42,24 +44,26 @@ class PrestamosController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Prestamos $prestamos)
+    public function edit(Prestamo $prestamos)
     {
-        //
+        return view('prestamos.edit', compact('prestamos'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Prestamos $prestamos)
+    public function update(Request $request, Prestamo $prestamos)
     {
-        //
+        $prestamos->update($request->all());
+        return redirect()->route('prestamos.index', compact('prestamos'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Prestamos $prestamos)
+    public function destroy(Prestamo $prestamos)
     {
-        //
+        $prestamos->delete();
+        return redirect()->route('prestamos.index');
     }
 }
