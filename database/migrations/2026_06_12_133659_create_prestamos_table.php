@@ -6,27 +6,29 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
- public function up(): void
-{
-    Schema::create('Prestamo', function (Blueprint $table) {
-        $table->id();
-        
-        $table->foreignId('Equipo_id')
-              ->constrained('Equipo')
-              ->onDelete('cascade');
-              
-        $table->foreignId('Solicitante_id')
-              ->constrained('Solicitante')
-              ->onDelete('cascade');
+    public function up(): void
+    {
+        Schema::create('prestamos', function (Blueprint $table) {
+            $table->id();
 
-        $table->date('Fecha_prestamo');
-        $table->date('Fecha_devolucion_esperada');
-        $table->date('Fecha_devolucion_real')->nullable(); 
+            $table->foreignId('equipo_id')
+                  ->constrained('equipos')
+                  ->onDelete('cascade');
 
-        $table->timestamps();
-    });
-}
+            $table->foreignId('solicitante_id')
+                  ->constrained('solicitantes')
+                  ->onDelete('cascade');
+
+            $table->date('fecha_prestamo');
+            $table->date('fecha_devolucion_esperada');
+            $table->date('fecha_devolucion_real')->nullable();
+
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('prestamos');
+    }
 };

@@ -10,11 +10,11 @@ class Prestamo extends Model
     use HasFactory;
 
     protected $fillable = [
-        'Equipo_id',
-        'Solicitante_id',
-        'Fecha_prestamo',
-        'Fecha_devolucion_esperada',
-        'Fecha_devolucion_real',
+        'equipo_id',
+        'solicitante_id',
+        'fecha_prestamo',
+        'fecha_devolucion_esperada',
+        'fecha_devolucion_real',
     ];
     public function Equipo()
     {

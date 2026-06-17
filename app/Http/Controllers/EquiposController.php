@@ -11,12 +11,18 @@ class EquiposController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $equipos = Equipo::all();
-        return view('equipos.index', compact('equipos'));
-    }
+        $busqueda = $request->input('busqueda');
 
+        $equipo = Equipo::when($busqueda, function ($query, $busqueda) {
+                        $query->where('codigo', 'like', "%$busqueda%")
+                            ->orWhere('nombre', 'like', "%$busqueda%");
+                    })
+                    ->get();
+
+        return view('equipos.index', compact('equipo', 'busqueda'));
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -25,23 +31,38 @@ class EquiposController extends Controller
         return view('equipos.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         $request->validate([
-            'codigo'    => 'required|unique:equipos,codigo,',
+            'codigo'    => 'required|unique:equipos,codigo',
             'nombre'    => 'required',
             'categoria' => 'required',
             'marca'     => 'required',
             'estado'    => 'required|in:Disponible,Prestado,Mantenimiento',
         ]);
 
-           Equipo::create($request->all());
-           return redirect()->route('equipos.index');
-    }
+        Equipo::create($request->all());
 
+        return redirect()->route('equipos.index')
+                        ->with('success', 'Equipo creado correctamente');
+    }
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function update(Request $request, Equipo $equipo)
+    {
+        $request->validate([
+            'codigo'    => 'required|unique:equipos,codigo,' . $equipo->id,
+            'nombre'    => 'required',
+            'categoria' => 'required',
+            'marca'     => 'required',
+            'estado'    => 'required|in:Disponible,Prestado,Mantenimiento',
+        ]);
+
+        $equipo->update($request->all());
+        return redirect()->route('equipos.index');
+    }
     /**
      * Display the specified resource.
      */
@@ -53,36 +74,17 @@ class EquiposController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request, Equipo $equipos)
+    public function edit(Request $request, Equipo $equipo)
     {
-        return view('equipos.edit', compact('equipos'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Equipo $equipos)
-    {
-
-        $request->validate([
-            'codigo'    => 'required|unique:equipos,codigo,',
-            'nombre'    => 'required',
-            'categoria' => 'required',
-            'marca'     => 'required',
-            'estado'    => 'required|in:Disponible,Prestado,Mantenimiento',
-        ]);
-        
-        
-        $equipos->update($request->all());   
-        return redirect()->route('equipos.index');
+        return view('equipos.edit', compact('equipo'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Equipo $equipos)
+    public function destroy(Equipo $equipo)
     {
-        $equipos->delete(); 
+        $equipo->delete(); 
         return redirect()->route('equipos.index');
     }
 }

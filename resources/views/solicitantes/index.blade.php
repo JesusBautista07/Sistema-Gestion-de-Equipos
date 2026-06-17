@@ -9,6 +9,23 @@
     </a>
 </div>
 
+{{-- Formulario de búsqueda --}}
+<form method="GET" action="{{ route('solicitantes.index') }}" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="busqueda" class="form-control" 
+               placeholder="Buscar por nombre o documento..." 
+               value="{{ $busqueda ?? '' }}">
+        <button class="btn btn-primary" type="submit">
+            <i class="bi bi-search"></i> Buscar
+        </button>
+        @if(!empty($busqueda))
+            <a href="{{ route('solicitantes.index') }}" class="btn btn-secondary">
+                <i class="bi bi-x-circle"></i> Limpiar
+            </a>
+        @endif
+    </div>
+</form>
+
 <table class="table table-bordered table-hover">
     <thead class="table-dark">
         <tr>
@@ -20,23 +37,23 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($solicitantes as $solicitante)
+        @foreach($solicitante as $solicitantes)
         <tr>
-            <td>{{ $solicitante->nombre }}</td>
-            <td>{{ $solicitante->documento }}</td>
-            <td>{{ $solicitante->correo }}</td>
+            <td>{{ $solicitantes->nombre }}</td>
+            <td>{{ $solicitantes->documento }}</td>
+            <td>{{ $solicitantes->correo }}</td>
             <td>
-                @if($solicitante->tipo == 'Estudiante')
+                @if($solicitantes->tipo == 'Estudiante')
                     <span class="badge bg-primary">Estudiante</span>
                 @else
                     <span class="badge bg-info text-dark">Docente</span>
                 @endif
             </td>
             <td>
-                <a href="{{ route('solicitantes.edit', $solicitante->id) }}" class="btn btn-sm btn-warning">
+                <a href="{{ route('solicitantes.edit', $solicitantes->id) }}" class="btn btn-sm btn-warning">
                     <i class="bi bi-pencil"></i> Editar
                 </a>
-                <form action="{{ route('solicitantes.destroy', $solicitante->id) }}" method="POST" style="display:inline">
+                <form action="{{ route('solicitantes.destroy', $solicitantes->id) }}" method="POST" style="display:inline">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-sm btn-danger"

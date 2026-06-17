@@ -40,7 +40,7 @@
                     <option value="Portátil" {{ old('categoria', $equipo->categoria) == 'Portátil' ? 'selected' : '' }}>Portátil</option>
                     <option value="Videobeam" {{ old('categoria', $equipo->categoria) == 'Videobeam' ? 'selected' : '' }}>Videobeam</option>
                     <option value="Cámara" {{ old('categoria', $equipo->categoria) == 'Cámara' ? 'selected' : '' }}>Cámara</option>
-                    <option value="Tablet" {{ old('categoria', $equipo->categoria) == 'Tablet' ? 'selected' : '' }}>Tablet</option>
+                    <option value="Tablet" {{ old('categoria', $equipo ->categoria) == 'Tablet' ? 'selected' : '' }}>Tablet</option>
                 </select>
                 @error('categoria')
                     <div class="invalid-feedback">{{ $message }}</div>

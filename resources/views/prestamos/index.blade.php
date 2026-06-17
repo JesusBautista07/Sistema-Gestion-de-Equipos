@@ -9,6 +9,23 @@
     </a>
 </div>
 
+{{-- Formulario de búsqueda --}}
+<form method="GET" action="{{ route('prestamos.index') }}" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="busqueda" class="form-control" 
+               placeholder="Buscar por equipo o solicitante..." 
+               value="{{ $busqueda ?? '' }}">
+        <button class="btn btn-primary" type="submit">
+            <i class="bi bi-search"></i> Buscar
+        </button>
+        @if(!empty($busqueda))
+            <a href="{{ route('prestamos.index') }}" class="btn btn-secondary">
+                <i class="bi bi-x-circle"></i> Limpiar
+            </a>
+        @endif
+    </div>
+</form>
+
 <table class="table table-bordered table-hover">
     <thead class="table-dark">
         <tr>
@@ -22,27 +39,27 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($prestamos as $prestamo)
+        @foreach($prestamo as $prestamos)
         <tr>
-            <td>{{ $prestamo->equipo->nombre }}</td>
-            <td>{{ $prestamo->solicitante->nombre }}</td>
-            <td>{{ $prestamo->fecha_prestamo }}</td>
-            <td>{{ $prestamo->fecha_devolucion_esperada }}</td>
-            <td>{{ $prestamo->fecha_devolucion_real ?? 'Pendiente' }}</td>
+            <td>{{ $prestamos->equipo->nombre }}</td>
+            <td>{{ $prestamos->solicitante->nombre }}</td>
+            <td>{{ $prestamos->fecha_prestamo }}</td>
+            <td>{{ $prestamos->fecha_devolucion_esperada }}</td>
+            <td>{{ $prestamos->fecha_devolucion_real ?? 'Pendiente' }}</td>
             <td>
-                @if($prestamo->fecha_devolucion_real)
+                @if($prestamos->fecha_devolucion_real)
                     <span class="badge bg-success">Devuelto</span>
                 @else
                     <span class="badge bg-warning text-dark">Pendiente</span>
                 @endif
             </td>
             <td>
-                @if(!$prestamo->fecha_devolucion_real)
-                    <a href="{{ route('prestamos.edit', $prestamo->id) }}" class="btn btn-sm btn-success">
+                @if(!$prestamos->fecha_devolucion_real)
+                    <a href="{{ route('prestamos.edit', $prestamos->id) }}" class="btn btn-sm btn-success">
                         <i class="bi bi-arrow-return-left"></i> Devolver
                     </a>
                 @endif
-                <form action="{{ route('prestamos.destroy', $prestamo->id) }}" method="POST" style="display:inline">
+                <form action="{{ route('prestamos.destroy', $prestamos->id) }}" method="POST" style="display:inline">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-sm btn-danger"

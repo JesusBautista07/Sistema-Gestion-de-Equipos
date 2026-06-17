@@ -11,14 +11,14 @@
 
 <div class="card">
     <div class="card-body">
-        <form action="{{ route('solicitantes.update', $solicitantes->id) }}" method="POST">
+        <form action="{{ route('solicitantes.update', $solicitante->id) }}" method="POST">
             @csrf
             @method('PUT')
 
             <div class="mb-3">
                 <label class="form-label">Nombre</label>
                 <input type="text" name="nombre" class="form-control @error('nombre') is-invalid @enderror"
-                    value="{{ old('nombre', $solicitantes->nombre) }}">
+                    value="{{ old('nombre', $solicitante->nombre) }}">
                 @error('nombre')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -27,7 +27,7 @@
             <div class="mb-3">
                 <label class="form-label">Documento</label>
                 <input type="text" name="documento" class="form-control @error('documento') is-invalid @enderror"
-                    value="{{ old('documento', $solicitantes->documento) }}">
+                    value="{{ old('documento', $solicitante->documento) }}">
                 @error('documento')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -36,7 +36,7 @@
             <div class="mb-3">
                 <label class="form-label">Correo</label>
                 <input type="email" name="correo" class="form-control @error('correo') is-invalid @enderror"
-                    value="{{ old('correo', $solicitantes->correo) }}">
+                    value="{{ old('correo', $solicitante->correo) }}">
                 @error('correo')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -46,8 +46,8 @@
                 <label class="form-label">Tipo</label>
                 <select name="tipo" class="form-select @error('tipo') is-invalid @enderror">
                     <option value="">-- Seleccione --</option>
-                    <option value="Estudiante" {{ old('tipo', $solicitantes->tipo) == 'Estudiante' ? 'selected' : '' }}>Estudiante</option>
-                    <option value="Docente" {{ old('tipo', $solicitantes->tipo) == 'Docente' ? 'selected' : '' }}>Docente</option>
+                    <option value="Estudiante" {{ old('tipo', $solicitante->tipo) == 'Estudiante' ? 'selected' : '' }}>Estudiante</option>
+                    <option value="Docente" {{ old('tipo', $solicitante->tipo) == 'Docente' ? 'selected' : '' }}>Docente</option>
                 </select>
                 @error('tipo')
                     <div class="invalid-feedback">{{ $message }}</div>

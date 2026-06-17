@@ -10,10 +10,10 @@ class Solicitante extends Model
     use HasFactory;
 
     protected $fillable = [ 
-        'Nombre',   
-        'Documento',
-        'Correo',
-        'Tipo',
+        'nombre',   
+        'documento',
+        'correo',
+        'tipo',
     ];
     public function Prestamo()
     {

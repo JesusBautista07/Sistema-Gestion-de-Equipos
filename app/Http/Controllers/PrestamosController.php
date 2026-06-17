@@ -12,26 +12,35 @@ class PrestamosController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        Prestamo::all();
-        return view('prestamos.index');
-    }
+        $busqueda = $request->input('busqueda');
 
-    /**
-     * Show the form for creating a new resource.
-     */
+        $prestamo = Prestamo::with('equipo', 'solicitante')
+                        ->when($busqueda, function ($query, $busqueda) {
+                            $query->whereHas('equipo', function ($q) use ($busqueda) {
+                                        $q->where('nombre', 'like', "%$busqueda%");
+                                    })
+                                    ->orWhereHas('solicitante', function ($q) use ($busqueda) {
+                                        $q->where('nombre', 'like', "%$busqueda%");
+                                    });
+                        })
+                        ->get();
+
+        return view('prestamos.index', compact('prestamo', 'busqueda'));
+    }
+    
+    
     public function create()
     {
-        $equipos = Equipo::where('estado', 'Disponible')->get();
-        $solicitantes = Solicitante::all();
-        return view('prestamos.create', compact('equipos', 'solicitantes'));
+        $equipo = Equipo::where('estado', 'Disponible')->get();
+        $solicitante = Solicitante::all();
+        return view('prestamos.create', compact('equipo', 'solicitante'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request, Prestamo $prestamos)
+    
+
+    public function store(Request $request, Prestamo $prestamo)
     {
 
         $request->validate([
@@ -42,13 +51,13 @@ class PrestamosController extends Controller
         ]);
 
         Prestamo::create($request->all());
-        return redirect()->route('prestamos.index', compact('prestamos'));
+        return redirect()->route('prestamos.index', compact('prestamo'));
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Prestamo $prestamos)
+    public function show(Prestamo $prestamo)
     {
         //
     }
@@ -56,31 +65,31 @@ class PrestamosController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Prestamo $prestamos)
+    public function edit(Prestamo $prestamo)
     {
-        return view('prestamos.edit', compact('prestamos'));
+        return view('prestamos.edit', compact('prestamo'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Prestamo $prestamos)
+    public function update(Request $request, Prestamo $prestamo)
     {
 
         $request->validate([
         'fecha_devolucion_real' => 'required|date|after:fecha_prestamo',
         ]);
 
-        $prestamos->update($request->all());
-        return redirect()->route('prestamos.index', compact('prestamos'));
+        $prestamo->update($request->all());
+        return redirect()->route('prestamos.index', compact('prestamo'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Prestamo $prestamos)
+    public function destroy(Prestamo $prestamo)
     {
-        $prestamos->delete();
+        $prestamo->delete();
         return redirect()->route('prestamos.index');
     }
 }

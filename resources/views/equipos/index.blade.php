@@ -9,6 +9,23 @@
     </a>
 </div>
 
+{{-- Formulario de búsqueda --}}
+<form method="GET" action="{{ route('equipos.index') }}" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="busqueda" class="form-control" 
+               placeholder="Buscar por código o nombre..." 
+               value="{{ $busqueda ?? '' }}">
+        <button class="btn btn-primary" type="submit">
+            <i class="bi bi-search"></i> Buscar
+        </button>
+        @if(!empty($busqueda))
+            <a href="{{ route('equipos.index') }}" class="btn btn-secondary">
+                <i class="bi bi-x-circle"></i> Limpiar
+            </a>
+        @endif
+    </div>
+</form>
+
 <table class="table table-bordered table-hover">
     <thead class="table-dark">
         <tr>
@@ -21,27 +38,26 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($equipos as $equipo)
+        @foreach($equipo as $equipos)
         <tr>
-            <td>{{ $equipo->codigo }}</td>
-            <td>{{ $equipo->nombre }}</td>
-            <td>{{ $equipo->categoria }}</td>
-            <td>{{ $equipo->marca }}</td>
+            <td>{{ $equipos->codigo }}</td>
+            <td>{{ $equipos->nombre }}</td>
+            <td>{{ $equipos->categoria }}</td>
+            <td>{{ $equipos->marca }}</td>
             <td>
-                {{-- Badge de color según estado --}}
-                @if($equipo->estado == 'Disponible')
+                @if($equipos->estado == 'Disponible')
                     <span class="badge bg-success">Disponible</span>
-                @elseif($equipo->estado == 'Prestado')
+                @elseif($equipos->estado == 'Prestado')
                     <span class="badge bg-warning text-dark">Prestado</span>
                 @else
                     <span class="badge bg-danger">Mantenimiento</span>
                 @endif
             </td>
             <td>
-                <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn btn-sm btn-warning">
+                <a href="{{ route('equipos.edit', $equipos->id) }}" class="btn btn-sm btn-warning">
                     <i class="bi bi-pencil"></i> Editar
                 </a>
-                <form action="{{ route('equipos.destroy', $equipo->id) }}" method="POST" style="display:inline">
+                <form action="{{ route('equipos.destroy', $equipos->id) }}" method="POST" style="display:inline">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-sm btn-danger"

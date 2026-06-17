@@ -10,13 +10,18 @@ class SolicitantesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $solicitantes = Solicitante::all();
-        return view('solicitantes.index', compact('solicitantes'));
+        $busqueda = $request->input('busqueda');
 
+        $solicitante = Solicitante::when($busqueda, function ($query, $busqueda) {
+                            $query->where('nombre', 'like', "%$busqueda%")
+                                ->orWhere('documento', 'like', "%$busqueda%");
+                        })
+                        ->get();
+
+        return view('solicitantes.index', compact('solicitante', 'busqueda'));
     }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -28,7 +33,7 @@ class SolicitantesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Solicitante $solicitantes)
+    public function store(Request $request, Solicitante $solicitante)
     {
 
         $request->validate([
@@ -39,7 +44,7 @@ class SolicitantesController extends Controller
         ]);
 
         Solicitante::create($request->all());
-        return redirect()->route('solicitantes.index', compact('solicitantes'));
+        return redirect()->route('solicitantes.index', compact('solicitante'));
     }
 
     /**
@@ -53,34 +58,34 @@ class SolicitantesController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Solicitante $solicitante)
     {
-        return view('solicitantes.edit', compact('solicitantes'));
+        return view('solicitantes.edit', compact('solicitante'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Solicitante $solicitantes)
+    public function update(Request $request, Solicitante $solicitante)
     {
 
         $request->validate([
         'nombre'    => 'required',
-        'documento' => 'required|unique:solicitantes,documento' .$solicitantes->id,
-        'correo'    => 'required|email|unique:solicitantes,correo' .$solicitantes->id,
+        'documento' => 'required|unique:solicitantes,documento,' .$solicitante->id,
+        'correo'    => 'required|email|unique:solicitantes,correo,' .$solicitante->id,
         'tipo'      => 'required|in:Estudiante,Docente',
         ]);
 
-        $solicitantes->update($request->all());
-        return redirect()->route('solicitantes.index', compact('solicitantes'));
+        $solicitante->update($request->all());
+        return redirect()->route('solicitantes.index', compact('solicitante'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Solicitante $solicitantes)
+    public function destroy(Solicitante $solicitante)
     {
-        $solicitantes->delete();
+        $solicitante->delete();
         return redirect()->route('solicitantes.index');
     }
 }

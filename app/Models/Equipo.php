@@ -10,11 +10,11 @@ class Equipo extends Model
     use HasFactory;
 
     protected $fillable = [
-        'Codigo',
-        'Nombre',   
-        'Categoria',
-        'Marca',
-        'Estado',
+        'codigo',
+        'nombre',   
+        'categoria',
+        'marca',
+        'estado',
     ];
 
     public function Prestamo()

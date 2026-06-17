@@ -18,9 +18,9 @@
                 <label class="form-label">Equipo</label>
                 <select name="equipo_id" class="form-select @error('equipo_id') is-invalid @enderror">
                     <option value="">-- Seleccione un equipo --</option>
-                    @foreach($equipos as $equipo)
-                        <option value="{{ $equipo->id }}" {{ old('equipo_id') == $equipo->id ? 'selected' : '' }}>
-                            {{ $equipo->codigo }} - {{ $equipo->nombre }}
+                    @foreach($equipo as $equipos)
+                        <option value="{{ $equipos->id }}" {{ old('equipo_id') == $equipos->id ? 'selected' : '' }}>
+                            {{ $equipos->codigo }} - {{ $equipos->nombre }}
                         </option>
                     @endforeach
                 </select>
@@ -33,9 +33,9 @@
                 <label class="form-label">Solicitante</label>
                 <select name="solicitante_id" class="form-select @error('solicitante_id') is-invalid @enderror">
                     <option value="">-- Seleccione un solicitante --</option>
-                    @foreach($solicitantes as $solicitante)
-                        <option value="{{ $solicitante->id }}" {{ old('solicitante_id') == $solicitante->id ? 'selected' : '' }}>
-                            {{ $solicitante->nombre }} - {{ $solicitante->documento }}
+                    @foreach($solicitante as $solicitantes)
+                        <option value="{{ $solicitantes->id }}" {{ old('solicitante_id') == $solicitantes->id ? 'selected' : '' }}>
+                            {{ $solicitantes->nombre }} - {{ $solicitantes->documento }}
                         </option>
                     @endforeach
                 </select>
