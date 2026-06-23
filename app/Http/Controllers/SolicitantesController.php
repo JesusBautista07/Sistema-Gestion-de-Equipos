@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Solicitante;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class SolicitantesController extends Controller
 {
@@ -87,5 +89,14 @@ class SolicitantesController extends Controller
     {
         $solicitante->delete();
         return redirect()->route('solicitantes.index');
+    }
+
+    public function exportarPdf()
+    {
+        $solicitantes = Solicitante::all();
+
+        $pdf = Pdf::loadView('solicitantes.pdf', compact('solicitantes'));
+
+        return $pdf->stream('reporte_solicitantes.pdf');
     }
 }

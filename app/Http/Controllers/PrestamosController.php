@@ -6,6 +6,7 @@ use App\Models\Prestamo;
 use App\Models\Equipo;
 use App\Models\Solicitante;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PrestamosController extends Controller
 {
@@ -92,4 +93,14 @@ class PrestamosController extends Controller
         $prestamo->delete();
         return redirect()->route('prestamos.index');
     }
+
+    public function exportarPdf()
+    {
+        $prestamos = Prestamo::with('equipo', 'solicitante')->get();
+
+        $pdf = Pdf::loadView('prestamos.pdf', compact('prestamos'));
+
+        return $pdf->stream('reporte_prestamos.pdf');
+    }
+    
 }

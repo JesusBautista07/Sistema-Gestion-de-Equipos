@@ -7,6 +7,9 @@
     <a href="{{ route('solicitantes.create') }}" class="btn btn-primary">
         <i class="bi bi-plus-circle"></i> Nuevo Solicitante
     </a>
+    <a href="{{ route('solicitantes.pdf') }}" class="btn btn-outline-danger">
+        <i class="bi bi-file-earmark-pdf"></i> Exportar PDF
+    </a>
 </div>
 
 {{-- Formulario de búsqueda --}}

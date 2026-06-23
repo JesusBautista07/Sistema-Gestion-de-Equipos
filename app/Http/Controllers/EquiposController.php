@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Equipo; 
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class EquiposController extends Controller
@@ -86,5 +87,16 @@ class EquiposController extends Controller
     {
         $equipo->delete(); 
         return redirect()->route('equipos.index');
+    }
+
+
+
+    public function exportarPdf()
+    {
+        $equipos = Equipo::all();
+
+        $pdf = Pdf::loadView('equipos.pdf', compact('equipos'));
+
+        return $pdf->stream('reporte_equipos.pdf');
     }
 }
