@@ -6,26 +6,35 @@ use Illuminate\Http\Request;
 use App\Models\Solicitante;
 use Barryvdh\DomPDF\Facade\Pdf;
 
-
+/**
+ * CONTROLADOR: SolicitantesController
+ * * DESCRIPCIÓN:
+ * Administra el ciclo de vida (CRUD) de la comunidad académica habilitada para
+ * retirar insumos (Estudiantes y Docentes). Controla la restricción de datos únicos,
+ * realiza filtrados condicionales y automatiza la generación de PDF del padrón de usuarios.
+ */
 class SolicitantesController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra la lista de solicitantes registrados con soporte para búsquedas en tiempo real.
+     * * INVESTIGACIÓN IMPLEMENTADA: Filtro avanzado con Query Builder por texto coincidente.
      */
     public function index(Request $request)
     {
         $busqueda = $request->input('busqueda');
 
+        // Evalúa condicionalmente si el usuario interactuó con el input de búsqueda
         $solicitante = Solicitante::when($busqueda, function ($query, $busqueda) {
                             $query->where('nombre', 'like', "%$busqueda%")
-                                ->orWhere('documento', 'like', "%$busqueda%");
+                                  ->orWhere('documento', 'like', "%$busqueda%");
                         })
                         ->get();
 
         return view('solicitantes.index', compact('solicitante', 'busqueda'));
     }
+
     /**
-     * Show the form for creating a new resource.
+     * Devuelve la vista del formulario para registrar nuevos usuarios.
      */
     public function create()
     {
@@ -33,24 +42,25 @@ class SolicitantesController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Valida y persiste un nuevo solicitante en la base de datos.
+     * * INTEGRIDAD DE DATOS: Asegura correos válidos y restringe duplicados en documento y email.
      */
     public function store(Request $request, Solicitante $solicitante)
     {
-
         $request->validate([
         'nombre'    => 'required',
-        'documento' => 'required|unique:solicitantes,documento',
-        'correo'    => 'required|email|unique:solicitantes,correo',
-        'tipo'      => 'required|in:Estudiante,Docente',
+        'documento' => 'required|unique:solicitantes,documento', // Evita registros dobles de cédulas/TI
+        'correo'    => 'required|email|unique:solicitantes,correo',  // Valida sintaxis de email y unicidad
+        'tipo'      => 'required|in:Estudiante,Docente',          // Restringe los roles a los permitidos
         ]);
 
+        // Crea el registro usando asignación masiva segura
         Solicitante::create($request->all());
         return redirect()->route('solicitantes.index', compact('solicitante'));
     }
 
     /**
-     * Display the specified resource.
+     * Endpoint para visualización detallada (Omitido para este diseño).
      */
     public function show(string $id)
     {
@@ -58,7 +68,7 @@ class SolicitantesController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Muestra la pantalla de modificación inyectando el Modelo correspondiente.
      */
     public function edit(Solicitante $solicitante)
     {
@@ -66,11 +76,11 @@ class SolicitantesController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza la información del usuario en la base de datos.
+     * * NOTA TÉCNICA: Ignora la llave primaria actual en la validación 'unique' para permitir guardar cambios sin conflictos.
      */
     public function update(Request $request, Solicitante $solicitante)
     {
-
         $request->validate([
         'nombre'    => 'required',
         'documento' => 'required|unique:solicitantes,documento,' .$solicitante->id,
@@ -83,7 +93,7 @@ class SolicitantesController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remueve el registro del solicitante de la base de datos.
      */
     public function destroy(Solicitante $solicitante)
     {
@@ -91,6 +101,9 @@ class SolicitantesController extends Controller
         return redirect()->route('solicitantes.index');
     }
 
+    /**
+     * Generación del padrón o reporte consolidado de solicitantes en formato PDF.
+     */
     public function exportarPdf()
     {
         $solicitantes = Solicitante::all();
